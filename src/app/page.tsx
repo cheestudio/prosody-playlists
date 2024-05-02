@@ -44,12 +44,15 @@ const AccessTokenHandler = ({ clientID }: { clientID: string }) => {
   return (
     <>
       {!hasAccessToken &&
-        <Button
-          onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:3000&scope=playlist-modify-private`)}
-          className="w-full max-w-md mb-10 mx-auto block"
-        >
-          Authorize Spotify
-        </Button>
+        <div className="pt-5 px-10">
+          <h3 className="text-center mb-3">First things first...</h3>
+          <Button
+            onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:3000&scope=playlist-modify-private`)}
+            className="w-full max-w-md mb-10 mx-auto block"
+          >
+            Connect Your Spotify
+          </Button>
+        </div>
       }
     </>
 
@@ -61,10 +64,18 @@ export default function Home() {
 
   const [tracksJson, setTracksJson] = useState<string>("[]");
   const [playlistName, setPlaylistName] = useState<string>("");
+  const [tokenExists, setTokenExists] = useState(false);
 
   const router = useRouter();
   const clientID = process.env.spotify_client;
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('spotifyAccessToken') !== null) {
+      setTokenExists(true);
+    }
+  }, []);
+
+  console.log(tokenExists);
 
   /* Refresh Token before Submit */
   const refreshToken = async () => {
@@ -116,8 +127,7 @@ export default function Home() {
         clientID={clientID || ''}
       />
 
-      <main className="flex flex-col items-flex-start justify-between p-5 my-10 w-full max-w-5xl mx-auto">
-
+      <main className={`flex flex-col items-flex-start justify-between p-5 my-10 w-full max-w-5xl mx-auto ${tokenExists ? 'opacity-100' : 'opacity-30 pointer-events-none'}`}>
 
         <h1 className="text-2xl font-bold mb-10 text-center">What do you want to listen to?</h1>
 
