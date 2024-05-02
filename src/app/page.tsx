@@ -47,7 +47,7 @@ const AccessTokenHandler = ({ clientID }: { clientID: string }) => {
         <div className="pt-5 px-10">
           <h3 className="text-center mb-3">First things first...</h3>
           <Button
-            onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:3000&scope=playlist-modify-private`)}
+            onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=https%3A%2F%2Fprosody.vercel.app&scope=playlist-modify-private`)}
             className="w-full max-w-md mb-10 mx-auto block"
           >
             Connect Your Spotify
