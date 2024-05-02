@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
 import { Button, Input } from "@nextui-org/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -97,57 +97,62 @@ export default function Home() {
 
 
   return (
-    <main className="flex flex-col items-flex-start justify-between p-5 my-10 w-full max-w-5xl mx-auto">
+    <Suspense fallback={<div>Loading...</div>}>
+      <main className="flex flex-col items-flex-start justify-between p-5 my-10 w-full max-w-5xl mx-auto">
 
-      {!hasAccessToken &&
-        <Button
-          onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:3000&scope=playlist-modify-private`)}
-        >Authorize Spotify</Button>
-      }
+        {!hasAccessToken &&
+          <Button
+            onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:3000&scope=playlist-modify-private`)}
+            className="w-full max-w-md mb-10 mx-auto"
+          >
+            Authorize Spotify
+            </Button>
+        }
 
-      <h1 className="text-2xl font-bold mb-10 text-center">What do you want to listen to?</h1>
+        <h1 className="text-2xl font-bold mb-10 text-center">What do you want to listen to?</h1>
 
-      <div className="grid md:grid-cols-2 gap-10 w-full  border-2 border-[#ccc] rounded-lg p-6">
-        <div>
-          <GeneratePlaylistForm
-            handleReturnTracks={handleReturnTracks}
-          />
+        <div className="grid md:grid-cols-2 gap-10 w-full  border-2 border-[#ccc] rounded-lg p-6">
+          <div>
+            <GeneratePlaylistForm
+              handleReturnTracks={handleReturnTracks}
+            />
+          </div>
+
+          <div className="generated-playlists">
+
+            {JSON.parse(tracksJson).length === 0 &&
+              <div className="text-center">
+                <IconMusicOff className="mx-auto my-5 block" size={48} />
+                <p className="text-sm italic">No tracks generated yet. Spin up something good.</p>
+              </div>
+            }
+
+            {JSON.parse(tracksJson).length > 0 &&
+              <div className="text-center">
+                <IconMusic className="mx-auto my-5 block" size={48} />
+                <h3 className="text-xl font-bold mb-0 text-center text-secondary">Success!</h3>
+                <ListTracks tracksJson={tracksJson} />
+                <form onSubmit={submitPlaylist} className="w-full max-w-2xl mx-auto grid gap-5">
+                  <Input
+                    id="playlistName"
+                    name="playlistName"
+                    type="text"
+                    value={playlistName}
+                    placeholder="Enter the name of your playlist..."
+                    isRequired
+                    onChange={(e) => setPlaylistName(e.target.value)}
+                  />
+                  <Button
+                    color="secondary"
+                    type="submit"
+                    endContent={<IconPlaylistAdd />}
+                  >Add to Spotify</Button>
+                </form>
+              </div>
+            }
+          </div>
         </div>
-
-        <div className="generated-playlists">
-
-          {JSON.parse(tracksJson).length === 0 &&
-            <div className="text-center">
-              <IconMusicOff className="mx-auto my-5 block" size={48} />
-              <p className="text-sm italic">No tracks generated yet. Spin up something good.</p>
-            </div>
-          }
-
-          {JSON.parse(tracksJson).length > 0 &&
-            <div className="text-center">
-              <IconMusic className="mx-auto my-5 block" size={48} />
-              <h3 className="text-xl font-bold mb-0 text-center text-secondary">Success!</h3>
-              <ListTracks tracksJson={tracksJson} />
-              <form onSubmit={submitPlaylist} className="w-full max-w-2xl mx-auto grid gap-5">
-                <Input
-                  id="playlistName"
-                  name="playlistName"
-                  type="text"
-                  value={playlistName}
-                  placeholder="Enter the name of your playlist..."
-                  isRequired
-                  onChange={(e) => setPlaylistName(e.target.value)}
-                />
-                <Button
-                  color="secondary"
-                  type="submit"
-                  endContent={<IconPlaylistAdd />}
-                >Add to Spotify</Button>
-              </form>
-            </div>
-          }
-        </div>
-      </div>
-    </main>
+      </main>
+    </Suspense>
   );
 }
