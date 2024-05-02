@@ -8,24 +8,14 @@ import { IconMusic, IconMusicOff, IconPlaylistAdd } from '@tabler/icons-react';
 import GeneratePlaylistForm from "@/app/components/GeneratePlaylist";
 import ListTracks from "./components/ListTracks";
 
-export default function Home() {
-
-  const [tracksJson, setTracksJson] = useState<string>("[]");
-  const [playlistName, setPlaylistName] = useState<string>("");
+// Separate component to handle search params
+const AccessTokenHandler = ({ clientID }: { clientID: string }) => {
+  const params = useSearchParams();
+  const router = useRouter();
   const [hasAccessToken, setHasAccessToken] = useState(true);
 
-  const router = useRouter();
-  const params = useSearchParams();
-  const clientID = process.env.spotify_client;
-
-
-  /* Get Initial Access Token */
-
   useEffect(() => {
-
     const getAccessToken = async () => {
-      const isClient = typeof window === 'object';
-      if (!isClient) return;
       const accessToken = localStorage.getItem('spotifyAccessToken');
       setHasAccessToken(!!accessToken);
       const code = params.get('code');
@@ -33,7 +23,7 @@ export default function Home() {
         setHasAccessToken(false);
         const tokenResponse = await fetch('/api/auth', {
           method: 'POST',
-          body: JSON.stringify({ code: params.get('code') }),
+          body: JSON.stringify({ code }),
           headers: {
             'Content-Type': 'application/json'
           },
@@ -46,12 +36,35 @@ export default function Home() {
           router.push('/');
         }
       }
-
-    }
+    };
 
     getAccessToken();
-
   }, [params, router]);
+
+  return (
+    <>
+      {!hasAccessToken &&
+        <Button
+          onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:3000&scope=playlist-modify-private`)}
+          className="w-full max-w-md mb-10 mx-auto"
+        >
+          Authorize Spotify
+        </Button>
+      }
+    </>
+
+  )
+};
+
+
+export default function Home() {
+
+  const [tracksJson, setTracksJson] = useState<string>("[]");
+  const [playlistName, setPlaylistName] = useState<string>("");
+
+  const router = useRouter();
+  const clientID = process.env.spotify_client;
+
 
   /* Refresh Token before Submit */
   const refreshToken = async () => {
@@ -98,16 +111,13 @@ export default function Home() {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
+
+      <AccessTokenHandler
+        clientID={clientID || ''}
+      />
+
       <main className="flex flex-col items-flex-start justify-between p-5 my-10 w-full max-w-5xl mx-auto">
 
-        {!hasAccessToken &&
-          <Button
-            onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:3000&scope=playlist-modify-private`)}
-            className="w-full max-w-md mb-10 mx-auto"
-          >
-            Authorize Spotify
-            </Button>
-        }
 
         <h1 className="text-2xl font-bold mb-10 text-center">What do you want to listen to?</h1>
 
