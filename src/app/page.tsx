@@ -46,7 +46,7 @@ const AccessTokenHandler = ({ clientID }: { clientID: string }) => {
       {!hasAccessToken &&
         <Button
           onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=http%3A%2F%2Flocalhost:3000&scope=playlist-modify-private`)}
-          className="w-full max-w-md mb-10 mx-auto"
+          className="w-full max-w-md mb-10 mx-auto block"
         >
           Authorize Spotify
         </Button>
@@ -121,47 +121,57 @@ export default function Home() {
 
         <h1 className="text-2xl font-bold mb-10 text-center">What do you want to listen to?</h1>
 
-        <div className="grid md:grid-cols-2 gap-10 w-full  border-2 border-[#ccc] rounded-lg p-6">
-          <div>
-            <GeneratePlaylistForm
-              handleReturnTracks={handleReturnTracks}
-            />
-          </div>
+        <div className="w-full border-2 border-[#ccc] rounded-lg p-6">
+          <div className="grid md:grid-cols-2 gap-10 ">
 
-          <div className="generated-playlists">
+            <div>
+              <GeneratePlaylistForm
+                handleReturnTracks={handleReturnTracks}
+              />
+            </div>
 
-            {JSON.parse(tracksJson).length === 0 &&
-              <div className="text-center">
-                <IconMusicOff className="mx-auto my-5 block" size={48} />
-                <p className="text-sm italic">No tracks generated yet. Spin up something good.</p>
+            <div className="generated-playlists flex">
+
+              <div className="text-center m-auto w-full">
+                {JSON.parse(tracksJson).length === 0 ?
+                  <div>
+                    <IconMusicOff className="mx-auto my-5 block" size={48} />
+                    <p className="text-sm italic">No tracks generated yet. Spin up something good.</p>
+                  </div>
+                  :
+                  <div>
+                    <IconMusic className="mx-auto my-5 block" size={48} />
+                    <h3 className="text-xl font-bold mb-0 text-center text-secondary">Tracklist:</h3>
+                    <ListTracks tracksJson={tracksJson} />
+                  </div>
+                }
               </div>
-            }
 
-            {JSON.parse(tracksJson).length > 0 &&
-              <div className="text-center">
-                <IconMusic className="mx-auto my-5 block" size={48} />
-                <h3 className="text-xl font-bold mb-0 text-center text-secondary">Success!</h3>
-                <ListTracks tracksJson={tracksJson} />
-                <form onSubmit={submitPlaylist} className="w-full max-w-2xl mx-auto grid gap-5">
-                  <Input
-                    id="playlistName"
-                    name="playlistName"
-                    type="text"
-                    value={playlistName}
-                    placeholder="Enter the name of your playlist..."
-                    isRequired
-                    onChange={(e) => setPlaylistName(e.target.value)}
-                  />
-                  <Button
-                    color="secondary"
-                    type="submit"
-                    endContent={<IconPlaylistAdd />}
-                  >Add to Spotify</Button>
-                </form>
-              </div>
-            }
+            </div>
           </div>
+          {JSON.parse(tracksJson).length > 0 &&
+            <div className="mt-10 mb-10">
+              <h3 className="text-xl font-bold mb-5 text-center text-secondary">Nice. Now add to your Spotify...</h3>
+              <form onSubmit={submitPlaylist} className="w-full max-w-2xl mx-auto grid gap-5">
+                <Input
+                  id="playlistName"
+                  name="playlistName"
+                  type="text"
+                  value={playlistName}
+                  placeholder="Enter the name of your playlist..."
+                  isRequired
+                  onChange={(e) => setPlaylistName(e.target.value)}
+                />
+                <Button
+                  color="secondary"
+                  type="submit"
+                  endContent={<IconPlaylistAdd />}
+                >Add Playlist</Button>
+              </form>
+            </div>
+          }
         </div>
+
       </main>
     </Suspense>
   );

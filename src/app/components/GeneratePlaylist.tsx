@@ -1,22 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Input, Spinner, Textarea } from "@nextui-org/react";
+import { Button, RadioGroup, Radio, Input, Spinner, Textarea } from "@nextui-org/react";
 import { IconWand } from '@tabler/icons-react';
 
-const GeneratePlaylistForm = ({handleReturnTracks}: {handleReturnTracks: (tracksJson: any) => void}) => {
+const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tracksJson: any) => void }) => {
 
   const [loading, setLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("claude");
 
   const generatePlaylist = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.currentTarget);
     const playlistRequest = formData.get('playlistRequest') as string;
-    console.log(playlistRequest);
-    const response = await fetch('/api/generate-claude', {
+    const trackCount = formData.get('track-count') || "5" as string;
+    const response = await fetch(`/api/generate-${selectedModel}`, {
       method: 'POST',
-      body: JSON.stringify({ playlistRequest }),
+      body: JSON.stringify({ playlistRequest, trackCount }),
       headers: {
         'Content-Type': 'application/json'
       },
@@ -28,13 +29,31 @@ const GeneratePlaylistForm = ({handleReturnTracks}: {handleReturnTracks: (tracks
   }
 
   return (
-    <form onSubmit={generatePlaylist} className="w-full max-w-2xl mx-auto grid gap-5">
+    <form onSubmit={generatePlaylist} className="w-full max-w-2xl mx-auto grid gap-4">
+      <RadioGroup
+        label="Choose Model"
+        orientation="horizontal"
+        color="secondary"
+        value={selectedModel}
+        onValueChange={setSelectedModel}
+      >
+        <Radio value="claude">Claude</Radio>
+        <Radio value="gpt">GPT</Radio>
+      </RadioGroup>
+      <p className="text-sm text-gray-500 italic mb-5">Claude gives more creative responses, GPT is faster.</p>
+      <Input
+        id="track-count"
+        name="track-count"
+        type="number"
+        isRequired
+        placeholder="Enter the number of tracks..."
+      />
       <Textarea
         id="playlistRequest"
         name="playlistRequest"
         type="text"
         isRequired
-        placeholder="Enter the type of playlist you want to generate..."
+        placeholder="Describe the vibe you're going for. For example: 'jazzy hip hop good for a house party, avoid mainstream tracks'."
       />
       <Button
         color="primary"

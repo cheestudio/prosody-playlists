@@ -12,7 +12,7 @@ const ListTracks = ({ tracksJson }: { tracksJson: string }) => {
   const tracks = parseTracks(tracksJson);
 
   return (
-    <ol className="text-left list-decimal m-5 text-sm border-2 border-black/50 rounded-lg p-2 list-inside">
+    <ol className="text-left list-decimal m-5 mt-0 text-sm border-2 border-black/50 rounded-lg p-2 list-inside">
       {tracks.map((track: { id: string; artist: string; song: string }) => (
         <li className="even:bg-[#ccc]/30 p-2 rounded-lg" key={track.id}>{`${track.artist} - ${track.song}`}</li>
       ))}
