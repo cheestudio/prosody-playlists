@@ -7,78 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { IconMusic, IconMusicOff, IconPlaylistAdd } from '@tabler/icons-react';
 import GeneratePlaylistForm from "@/app/components/GeneratePlaylist";
 import ListTracks from "./components/ListTracks";
-
-// Separate component to handle search params
-const AccessTokenHandler = ({ clientID }: { clientID: string }) => {
-  const params = useSearchParams();
-  const router = useRouter();
-  const [hasAccessToken, setHasAccessToken] = useState(true);
-
-  useEffect(() => {
-    const getAccessToken = async () => {
-      // const accessToken = localStorage.getItem('spotifyAccessToken');
-      // setHasAccessToken(!!accessToken);
-      // const code = params.get('code');
-      // if (code && !accessToken) {
-      //   setHasAccessToken(false);
-      //   const tokenResponse = await fetch('/api/auth', {
-      //     method: 'POST',
-      //     body: JSON.stringify({ code }),
-      //     headers: {
-      //       'Content-Type': 'application/json'
-      //     },
-      //   });
-      //   const token = await tokenResponse.json();
-      //   if (token.access_token) {
-      //     localStorage.setItem('spotifyAccessToken', token.access_token);
-      //     localStorage.setItem('spotifyRefreshToken', token.refresh_token);
-      //     localStorage.setItem('spotifyExpiresIn', token.expires_in);
-      //     router.push('/');
-      //   }
-      // }
-      const code = params.get('code');
-      if (code) {
-        const tokenResponse = await fetch('/api/auth', {
-          method: 'POST',
-          body: JSON.stringify({ code }),
-          headers: {
-            'Content-Type': 'application/json'
-          },
-        });
-        const token = await tokenResponse.json();
-        if (token.access_token) {
-          localStorage.setItem('spotifyAccessToken', token.access_token);
-          localStorage.setItem('spotifyRefreshToken', token.refresh_token);
-          localStorage.setItem('spotifyExpiresIn', token.expires_in);
-        }
-      }
-    };
-
-    getAccessToken();
-  }, [params, router]);
-
-  const authorizeSpotify = () => {
-    router.push('/api/login');
-  }
-
-  return (
-    <>
-   
-        <div className="pt-5 px-10">
-          <h3 className="text-center mb-3">First things first...</h3>
-          <Button
-            onPress={authorizeSpotify}
-            className="w-full max-w-md mb-10 mx-auto block"
-          >
-            Connect Your Spotify
-          </Button>
-        </div>
-      
-    </>
-
-  )
-};
-
+import AccessTokenHandler from "@/app/components/AccessTokenHandler";
 
 export default function Home() {
 
@@ -90,12 +19,13 @@ export default function Home() {
   const clientID = process.env.spotify_client;
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem('spotifyAccessToken') !== null) {
+    if (localStorage.getItem('spotifyAccessToken') !== null) {
+      console.log('useEffect for home component');
       setTokenExists(true);
     }
-  }, []);
-
-  console.log(tokenExists);
+  }, [router,tokenExists]);
+  
+  console.log('tokenExists', tokenExists);
 
   /* Refresh Token before Submit */
   const refreshToken = async () => {
@@ -145,6 +75,8 @@ export default function Home() {
 
       <AccessTokenHandler
         clientID={clientID || ''}
+        tokenExists={tokenExists}
+        setTokenExists={setTokenExists}
       />
 
       <main className={`flex flex-col items-flex-start justify-between p-5 my-10 w-full max-w-5xl mx-auto ${tokenExists ? 'opacity-100' : 'opacity-30 pointer-events-none'}`}>
