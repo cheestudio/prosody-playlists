@@ -69,8 +69,10 @@ export default function Home() {
       }
     });
     const data = await response.json();
-    console.log('data', data);
-    setPlaylistCreated(true);
+    console.log('data', data.playlistId);
+    if (data.playlistId) {
+      setPlaylistCreated(true);
+    }
   }
 
 
