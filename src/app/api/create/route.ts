@@ -25,7 +25,7 @@ export async function POST(request: Request): Promise<Response> {
 
   // Create a new playlist
   // const userId = process.env.SPOTIFY_USERID;
-  const playlistResponse = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+  const playlistResponse = await fetch(`https://api.spotify.com/v1/users/cheestudio/playlists`, {
     method: 'POST',
     body: JSON.stringify({
       name: playlistName,
