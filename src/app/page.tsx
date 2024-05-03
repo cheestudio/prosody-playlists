@@ -16,11 +16,28 @@ const AccessTokenHandler = ({ clientID }: { clientID: string }) => {
 
   useEffect(() => {
     const getAccessToken = async () => {
-      const accessToken = localStorage.getItem('spotifyAccessToken');
-      setHasAccessToken(!!accessToken);
+      // const accessToken = localStorage.getItem('spotifyAccessToken');
+      // setHasAccessToken(!!accessToken);
+      // const code = params.get('code');
+      // if (code && !accessToken) {
+      //   setHasAccessToken(false);
+      //   const tokenResponse = await fetch('/api/auth', {
+      //     method: 'POST',
+      //     body: JSON.stringify({ code }),
+      //     headers: {
+      //       'Content-Type': 'application/json'
+      //     },
+      //   });
+      //   const token = await tokenResponse.json();
+      //   if (token.access_token) {
+      //     localStorage.setItem('spotifyAccessToken', token.access_token);
+      //     localStorage.setItem('spotifyRefreshToken', token.refresh_token);
+      //     localStorage.setItem('spotifyExpiresIn', token.expires_in);
+      //     router.push('/');
+      //   }
+      // }
       const code = params.get('code');
-      if (code && !accessToken) {
-        setHasAccessToken(false);
+      if (code) {
         const tokenResponse = await fetch('/api/auth', {
           method: 'POST',
           body: JSON.stringify({ code }),
@@ -33,7 +50,6 @@ const AccessTokenHandler = ({ clientID }: { clientID: string }) => {
           localStorage.setItem('spotifyAccessToken', token.access_token);
           localStorage.setItem('spotifyRefreshToken', token.refresh_token);
           localStorage.setItem('spotifyExpiresIn', token.expires_in);
-          router.push('/');
         }
       }
     };
@@ -41,19 +57,23 @@ const AccessTokenHandler = ({ clientID }: { clientID: string }) => {
     getAccessToken();
   }, [params, router]);
 
+  const authorizeSpotify = () => {
+    router.push('/api/login');
+  }
+
   return (
     <>
-      {!hasAccessToken &&
+   
         <div className="pt-5 px-10">
           <h3 className="text-center mb-3">First things first...</h3>
           <Button
-            onPress={() => router.push(`https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=code&redirect_uri=https%3A%2F%2Fprosody.vercel.app&scope=playlist-modify-private`)}
+            onPress={authorizeSpotify}
             className="w-full max-w-md mb-10 mx-auto block"
           >
             Connect Your Spotify
           </Button>
         </div>
-      }
+      
     </>
 
   )
