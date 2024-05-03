@@ -15,8 +15,16 @@ export async function POST(request: Request): Promise<Response> {
     'Content-Type': 'application/json'
   };
 
+  const userResponse = await fetch(`https://api.spotify.com/v1/me `, {
+    method: 'GET',
+    headers: headers,
+  });
+  const userData = await userResponse.json();
+  const userId = userData.id;
+
   // Create a new playlist
-  const userId = process.env.SPOTIFY_USERID;
+  // const userId = process.env.SPOTIFY_USERID;
+  console.log('userId', userId);
   const playlistResponse = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
     method: 'POST',
     body: JSON.stringify({

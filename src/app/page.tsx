@@ -14,6 +14,7 @@ export default function Home() {
   const [tracksJson, setTracksJson] = useState<string>("[]");
   const [playlistName, setPlaylistName] = useState<string>("");
   const [tokenExists, setTokenExists] = useState(false);
+  const [playlistCreated, setPlaylistCreated] = useState(false);
 
   const router = useRouter();
   const clientID = process.env.spotify_client;
@@ -67,6 +68,9 @@ export default function Home() {
         'Content-Type': 'application/json'
       }
     });
+    const data = await response.json();
+    console.log('data', data);
+    setPlaylistCreated(true);
   }
 
 
@@ -113,8 +117,11 @@ export default function Home() {
           </div>
           {JSON.parse(tracksJson).length > 0 &&
             <div className="mt-10 mb-10">
-              <h3 className="text-xl font-bold mb-5 text-center text-secondary">Nice. Now add to your Spotify...</h3>
+              {playlistCreated ?
+                <h3 className="text-xl font-bold mb-5 text-center text-secondary">Success! Playlist added.</h3>
+                :
               <form onSubmit={submitPlaylist} className="w-full max-w-2xl mx-auto grid gap-5">
+                <h3 className="text-xl font-bold mb-5 text-center text-secondary">Nice. Now add to your Spotify...</h3>
                 <Input
                   id="playlistName"
                   name="playlistName"
@@ -130,6 +137,7 @@ export default function Home() {
                   endContent={<IconPlaylistAdd />}
                 >Add Playlist</Button>
               </form>
+              }
             </div>
           }
         </div>
