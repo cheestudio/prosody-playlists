@@ -14,7 +14,7 @@ export async function POST(request: Request): Promise<Response> {
   const {playlistRequest, trackCount} = await request.json();
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4-turbo",
+    model: "gpt-4o",
     messages: [
       {
         "role": "system",
@@ -25,9 +25,8 @@ export async function POST(request: Request): Promise<Response> {
         "content": playlistRequest
       }
     ],
-    temperature: 0.7,
-    max_tokens: 300,
-    top_p: 1,
+    temperature: 0.95,
+    max_tokens: 1000,
   });
   const choiceText = response.choices[0].message.content || "No response";
   return new Response(JSON.stringify(choiceText)); 

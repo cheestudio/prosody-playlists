@@ -14,8 +14,8 @@ const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tra
     setLoading(true);
     const formData = new FormData(e.currentTarget);
     const playlistRequest = formData.get('playlistRequest') as string;
-    const trackCount = formData.get('track-count') || "5" as string;
-    const response = await fetch(`/api/generate-${selectedModel}`, {
+    const trackCount = formData.get('track-count') || "10" as string;
+    const response = await fetch(`/api/generate-gpt`, {
       method: 'POST',
       body: JSON.stringify({ playlistRequest, trackCount }),
       headers: {
@@ -30,7 +30,7 @@ const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tra
 
   return (
     <form onSubmit={generatePlaylist} className="w-full max-w-2xl mx-auto grid gap-4">
-      <RadioGroup
+      {/* <RadioGroup
         label="Choose Model"
         orientation="horizontal"
         color="secondary"
@@ -39,14 +39,14 @@ const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tra
       >
         <Radio value="claude">Claude</Radio>
         <Radio value="gpt">GPT</Radio>
-      </RadioGroup>
-      <p className="text-sm text-gray-500 italic mb-5">Claude gives more creative responses, GPT is faster.</p>
+      </RadioGroup> */}
+      {/* <p className="text-sm text-gray-500 italic mb-5">Claude gives more creative responses, GPT is faster.</p> */}
       <Input
         id="track-count"
         name="track-count"
         type="number"
         isRequired
-        placeholder="Enter the number of tracks..."
+        placeholder="Enter the number of tracks (default is 10)..."
       />
       <Textarea
         id="playlistRequest"
