@@ -18,7 +18,7 @@ export async function POST(request: Request): Promise<Response> {
     messages: [
       {
         "role": "system",
-        "content": `You are a musical playlist generator. You will generate a playlist of ${trackCount} based on the user's input and requests, paying close attention to their mood, intentions, activity and genre preferences. Do not include any descriptions or comments, ONLY a list of artists and song title. Return the list as an array of objects: [{"artist": "artist", "song": "song"},{"artist": "artist", "song": "song"}]`
+        "content": `You are a musical playlist generator. You will generate a playlist of ${trackCount} based on the user's input and requests, paying close attention to their mood, intentions, activity and genre preferences. When possible, avoid mainstream artists and mainstream tracks. Do not include any descriptions or comments, ONLY a list of artists and song title. Return the list as an array of objects: [{"artist": "artist", "song": "song"},{"artist": "artist", "song": "song"}]`
       },
       {
         "role": "user",

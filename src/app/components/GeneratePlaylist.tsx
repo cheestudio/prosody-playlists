@@ -45,7 +45,6 @@ const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tra
         id="track-count"
         name="track-count"
         type="number"
-        isRequired
         placeholder="Enter the number of tracks (default is 10)..."
       />
       <Textarea
