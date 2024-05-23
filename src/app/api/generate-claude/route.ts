@@ -1,5 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk';
 
+export const config = {
+  maxDuration: 30,
+};
+
 export async function POST(request: Request): Promise<Response> {
 
   const claudeKey = process.env.CLAUDE_API_KEY;

@@ -1,5 +1,9 @@
 import OpenAI from "openai";
 
+export const config = {
+  maxDuration: 30,
+};
+
 export async function POST(request: Request): Promise<Response> {
   const openaiApiKey = process.env.OPENAI_KEY;
   if (!openaiApiKey) {
