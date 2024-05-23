@@ -15,6 +15,7 @@ export default function Home() {
   const [playlistName, setPlaylistName] = useState<string>("");
   const [tokenExists, setTokenExists] = useState(false);
   const [playlistCreated, setPlaylistCreated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   const clientID = process.env.spotify_client;
@@ -53,6 +54,8 @@ export default function Home() {
   const submitPlaylist = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setIsLoading(true);
+
     let accessToken = localStorage.getItem('spotifyAccessToken');
     const expiryTime = localStorage.getItem('spotifyTokenExpiryTime');
 
@@ -72,6 +75,8 @@ export default function Home() {
     console.log('data', data.playlistId);
     if (data.playlistId) {
       setPlaylistCreated(true);
+      setIsLoading(false);
+      setTracksJson("[]");
     }
   }
 
@@ -134,6 +139,7 @@ export default function Home() {
                   onChange={(e) => setPlaylistName(e.target.value)}
                 />
                 <Button
+                  isLoading={isLoading}
                   color="secondary"
                   type="submit"
                   endContent={<IconPlaylistAdd />}
