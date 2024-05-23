@@ -1,8 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-export const config = {
-  maxDuration: 30,
-};
+export const maxDuration = 30; 
 
 export async function POST(request: Request): Promise<Response> {
 
