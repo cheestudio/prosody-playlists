@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, Suspense } from "react";
-
+import toast from 'react-hot-toast';
 import { Button, Input } from "@nextui-org/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconMusic, IconMusicOff, IconPlaylistAdd } from '@tabler/icons-react';
@@ -74,13 +74,16 @@ export default function Home() {
       }
     });
     const data = await response.json();
-    console.log('data', data.playlistId);
     if (data.playlistId) {
       setPlaylistCreated(true);
+      toast.success('Playlist added successfully!');
       setIsLoading(false);
     }
+    else {
+      setIsLoading(false);
+      toast.error('Something went wrong, please reload and try again');
+    }
   }
-
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -124,12 +127,12 @@ export default function Home() {
             </div>
           </div>
           {JSON.parse(tracksJson).length > 0 &&
-            <div className="mt-10 mb-10">
+            <div className="mt-8 mb-5">
               {playlistCreated ?
-                <h3 className="text-xl font-bold mb-5 text-center text-secondary">Success! Playlist added.</h3>
+                <h3 className="text-xl font-bold mb-5 text-center text-secondary">Added! Go ahead and generate another playlist.</h3>
                 :
               <form onSubmit={submitPlaylist} className="w-full max-w-2xl mx-auto grid gap-5">
-                <h3 className="text-xl font-bold mb-5 text-center text-secondary">Nice. Now add to your Spotify...</h3>
+                <h3 className="text-xl font-bold text-center text-secondary">Let&apos;s add it to your Spotify account:</h3>
                 <Input
                   id="playlistName"
                   name="playlistName"

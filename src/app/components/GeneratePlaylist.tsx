@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from 'react-hot-toast';
 import { Button, RadioGroup, Radio, Input, Spinner, Textarea } from "@nextui-org/react";
 import { IconWand } from '@tabler/icons-react';
 
@@ -16,7 +17,7 @@ const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tra
     const formData = new FormData(e.currentTarget);
     const playlistRequest = formData.get('playlistRequest') as string;
     const trackCount = formData.get('track-count') || "10" as string;
-    const response = await fetch(`/api/generate-gpt`, {
+    const response = await fetch(`/api/generate-${selectedModel}`, {
       method: 'POST',
       body: JSON.stringify({ playlistRequest, trackCount }),
       headers: {
@@ -27,11 +28,16 @@ const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tra
     console.log(JSON.stringify(data));
     setLoading(false);
     handleReturnTracks(data);
+    if(response.status === 200){
+      toast.success('Playlist generated successfully');
+    } else {
+      toast.error('Something went wrong, please try to generate the playlist again.');
+    }
   }
 
   return (
-    <form onSubmit={generatePlaylist} className="w-full max-w-2xl mx-auto grid gap-4">
-      {/* <RadioGroup
+    <form onSubmit={generatePlaylist} className="w-full max-w-2xl mx-auto grid gap-3">
+       <RadioGroup
         label="Choose Model"
         orientation="horizontal"
         color="secondary"
@@ -40,8 +46,8 @@ const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tra
       >
         <Radio value="claude">Claude</Radio>
         <Radio value="gpt">GPT</Radio>
-      </RadioGroup> */}
-      {/* <p className="text-sm text-gray-500 italic mb-5">Claude gives more creative responses, GPT is faster.</p> */}
+      </RadioGroup> 
+     <p className="text-sm text-gray-500 italic mb-1">Claude gives more creative responses, GPT is faster.</p> 
       <Input
         id="track-count"
         name="track-count"
