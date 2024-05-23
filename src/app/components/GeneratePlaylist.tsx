@@ -12,6 +12,7 @@ const GeneratePlaylistForm = ({ handleReturnTracks }: { handleReturnTracks: (tra
   const generatePlaylist = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    handleReturnTracks("[]");
     const formData = new FormData(e.currentTarget);
     const playlistRequest = formData.get('playlistRequest') as string;
     const trackCount = formData.get('track-count') || "10" as string;

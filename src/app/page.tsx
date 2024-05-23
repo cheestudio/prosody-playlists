@@ -47,6 +47,8 @@ export default function Home() {
   /* Get Tracks */
   const handleReturnTracks = (tracksJson: string) => {
     setTracksJson(tracksJson);
+    setPlaylistCreated(false);
+    setPlaylistName("");
   }
 
   /* Submit Playlist to Spotify */
@@ -76,7 +78,6 @@ export default function Home() {
     if (data.playlistId) {
       setPlaylistCreated(true);
       setIsLoading(false);
-      setTracksJson("[]");
     }
   }
 
